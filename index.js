@@ -3,11 +3,23 @@ const app = express();
 const cors = require('cors');
 // allows us to run queries to our posrgres database
 const pool = require('./db');
+const PORT = process.env.PORT || 5000;
+const path = require('path');
 
 // middleware
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static('./client/build'));
+
+if (process.env.NODE_ENV === 'production') {
+    // serve static content
+    // npm run build
+    app.use(express.static(path.join(__dirname, './client/build')));
+}
+
+console.log(__dirname);
+console.log(path.join(__dirname, 'client/build'));
 
 // ROUTES //
 // create a todo
@@ -73,6 +85,6 @@ app.delete('/todos/:id', async (req, res) => {
     }
 });
 
-app.listen(5000, () => {
-  console.log('Listening on port 5000');
-});  
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
